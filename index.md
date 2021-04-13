@@ -13,15 +13,23 @@
   analytics.page();
   }}();
 
-function redirect() {
-  window.location = "https://github.com/ActivitySchema/ActivitySchema";
-}
+  function redirect() {
+    window.location = "https://github.com/ActivitySchema/ActivitySchema";
+  }
 
-analytics.ready(function() {
-  // Segment is ready, but it hasn't yet sent the page() call to its servers.
-  // Force a dispatch call now to send, and redirect on both success and failure
-  analytics.dispatch().then(redirect, redirect);
-});
+  // some browsers block analytics.js from loading entirely, so we set a timer to 
+  // check and redirect anyway if that happens
+  var timeout = setTimeout(function() {
+    redirect();
+  }, 2000);
+
+  analytics.ready(function() {
+    clearTimeout(timeout);
+    
+    // Segment is ready, but it hasn't yet sent the page() call to its servers.
+    // Force a dispatch call now to send, and redirect on both success and failure
+    analytics.dispatch().then(redirect, redirect);
+  });
 </script>
 
 loading...
